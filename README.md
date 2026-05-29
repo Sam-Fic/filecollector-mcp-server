@@ -19,7 +19,7 @@ filecollector CLI (Vala)  ———  ~/.config/filecollector/mcp_state.json
 ## Prerequisites
 
 - Node.js >= 18
-- [filecollector](https://github.com/anomalyco/filecollector) CLI 已安装并在 `$PATH` 中可用
+- [FileCollector](https://github.com/Sam-Fic/filecollector-gnome) CLI 已安装并在 `$PATH` 中可用
 
 ## Available Tools
 
