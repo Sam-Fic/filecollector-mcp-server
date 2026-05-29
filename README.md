@@ -1,6 +1,8 @@
 # FileCollector MCP Server
 
-MCP (Model Context Protocol) 服务，封装 [FileCollector](https://github.com/Sam-Fic/filecollector-gnome) CLI，让大模型自主探索代码库、收集文件、插入自定义文本，最终导出为结构化的 TXT 上下文文件。
+[简体中文](README.md) | [English](README_en.md)
+
+MCP (Model Context Protocol) 服务，封装 FileCollector CLI，让大模型自主探索代码库、收集文件、插入自定义文本，最终导出为结构化的 TXT 上下文文件。
 
 ## How It Works
 
@@ -19,7 +21,14 @@ filecollector CLI (Vala)  ———  ~/.config/filecollector/mcp_state.json
 ## Prerequisites
 
 - Node.js >= 18
-- [FileCollector](https://github.com/Sam-Fic/filecollector-gnome) CLI 已安装并在 `$PATH` 中可用
+- FileCollector 已安装并在 `$PATH` 中可用
+
+Windows / Linux / macOS 用户：
+[FileCollector 仓库地址](https://github.com/Sam-Fic/filecollector)
+
+GNOME 桌面环境用户（美观的 UI 和更积极的维护）：
+[FileCollector-GNOME 仓库地址](https://github.com/Sam-Fic/filecollector-gnome)
+
 
 ## Available Tools
 
