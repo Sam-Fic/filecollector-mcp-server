@@ -60,7 +60,7 @@ npx tsc
   "mcpServers": {
     "filecollector": {
       "command": "node",
-      "args": ["/absolute/path/to/template-mcp-server/dist/index.js"]
+      "args": ["/absolute/path/to/filecollector-mcp-server/dist/index.js"]
     }
   }
 }
