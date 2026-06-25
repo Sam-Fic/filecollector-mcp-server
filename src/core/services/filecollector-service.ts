@@ -7,7 +7,7 @@ import * as os from 'node:os';
 const execAsync = promisify(exec);
 
 const STATE_DIR = path.join(os.homedir(), '.config', 'filecollector');
-const STATE_FILE = path.join(STATE_DIR, 'mcp_state.json');
+const STATE_FILE = path.join(STATE_DIR, 'mcp_state.fcol');
 const CLI_NAME = 'filecollector';
 
 function ensureDir(dir: string): void {

@@ -6,7 +6,7 @@ MCP (Model Context Protocol) server that encapsulates the FileCollector CLI, ena
 
 ## How It Works
 
-Programming tools (such as Claude Code, Cursor) invoke this service via MCP tools, which in turn call the `filecollector` command-line tool to perform the actual orchestration. Session state is persisted via `--load`/`--save` in `~/.config/filecollector/mcp_state.json`, ensuring state is not lost across multiple tool invocations.
+Programming tools (such as Claude Code, Cursor) invoke this service via MCP tools, which in turn call the `filecollector` command-line tool to perform the actual orchestration. Session state is persisted via `--load`/`--save` in `~/.config/filecollector/mcp_state.fcol`, ensuring state is not lost across multiple tool invocations.
 
 ```
 LLM Client (Cursor/Claude Desktop)
@@ -15,7 +15,7 @@ LLM Client (Cursor/Claude Desktop)
         |
 FileCollector MCP Server (Node.js)
         |
-filecollector CLI (Vala)  ———  ~/.config/filecollector/mcp_state.json
+filecollector CLI (Vala)  ———  ~/.config/filecollector/mcp_state.fcol
 ```
 
 ## Prerequisites
@@ -29,15 +29,14 @@ Windows / Linux / macOS users:
 GNOME desktop environment users (beautiful UI and more active maintenance):
 [FileCollector-GNOME Repository](https://github.com/Sam-Fic/filecollector-gnome)
 
-
 ## Available Tools
 
-| Tool | Description |
-|---|---|
-| `fc_set_work_dir` | Set the working directory. Each call clears the old state and switches to the new project root |
-| `fc_add_files` | Batch add files to the orchestration queue. Accepts an array of file paths |
-| `fc_add_custom_prompt` | Insert custom text blocks (explanations, guidance, unresolved issues, etc.) |
-| `fc_generate_context` | Export all queued content as a TXT file. Returns the file path and content preview |
+| Tool                   | Description                                                                                    |
+| ---------------------- | ---------------------------------------------------------------------------------------------- |
+| `fc_set_work_dir`      | Set the working directory. Each call clears the old state and switches to the new project root |
+| `fc_add_files`         | Batch add files to the orchestration queue. Accepts an array of file paths                     |
+| `fc_add_custom_prompt` | Insert custom text blocks (explanations, guidance, unresolved issues, etc.)                    |
+| `fc_generate_context`  | Export all queued content as a TXT file. Returns the file path and content preview             |
 
 ## Quick Start
 
@@ -81,7 +80,7 @@ npx tsc
 
 ## State Management
 
-- State file path: `~/.config/filecollector/mcp_state.json`
+- State file path: `~/.config/filecollector/mcp_state.fcol`
 - Each tool call automatically `--load` to restore state → perform operation → `--save` to persist
 - `fc_set_work_dir` calls `--clear` to clear old state and start a new session
 - Manually deleting the state file resets the session; the next call will automatically initialize
