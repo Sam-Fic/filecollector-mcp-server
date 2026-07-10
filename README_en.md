@@ -113,7 +113,7 @@ npx tsc
 - `fc_set_work_dir` calls `--clear` to clear old state and start a new session
 - Manually deleting the state file resets the session; the next call will automatically initialize
 
-### Seamless integration with the GUI
+## Seamless integration with the GUI
 
 If a FileCollector GUI is detected as running (IPC address file / socket reachable), after each
 operation the MCP server **additionally** forwards the operation to the GUI over IPC
