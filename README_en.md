@@ -50,7 +50,7 @@ npx tsc            # or: bun build src/index.ts --outdir dist --target node
 # Output located at dist/index.js
 ```
 
-## Prerequisite: make the `filecollector` command available
+## Make the `filecollector` command available
 
 The MCP server invokes the underlying CLI via the `filecollector` command, so it must be on your `$PATH`:
 

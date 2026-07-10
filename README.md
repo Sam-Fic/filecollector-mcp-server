@@ -50,11 +50,11 @@ npx tsc            # 或: bun build src/index.ts --outdir dist --target node
 # 产物位于 dist/index.js
 ```
 
-## 前置：让 `filecollector` 命令可用
+## 让 `filecollector` 命令可用
 
 MCP server 通过 `filecollector` 命令调用底层 CLI，需保证它在 `$PATH` 中：
 
-- **Flet 版（推荐，跨平台，headless 真可用）**：把仓库的启动脚本软链到 PATH，例如
+- **Flet 版（推荐，跨平台，headless 可用）**：把仓库的启动脚本软链到 PATH，例如
   ```bash
   ln -s /path/to/filecollector/filecollector ~/.local/bin/filecollector
   ```
