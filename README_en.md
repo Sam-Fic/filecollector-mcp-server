@@ -15,7 +15,7 @@ LLM Client (Cursor/Claude Desktop)
         |
 FileCollector MCP Server (Node.js)
         |
-filecollector CLI (Vala)  ———  ~/.config/filecollector/mcp_state.fcol
+filecollector CLI (Flet/Python or GNOME/Vala)  ———  ~/.config/filecollector/mcp_state.fcol
 ```
 
 ## Prerequisites
@@ -44,10 +44,37 @@ GNOME desktop environment users (beautiful UI and more active maintenance):
 # Install dependencies
 npm install
 
-# Build (TypeScript -> JavaScript)
-npx tsc
+# Build (TypeScript -> JavaScript). Use `bun build` if bun is available, otherwise tsc:
+npx tsc            # or: bun build src/index.ts --outdir dist --target node
 
 # Output located at dist/index.js
+```
+
+## Prerequisite: make the `filecollector` command available
+
+The MCP server invokes the underlying CLI via the `filecollector` command, so it must be on your `$PATH`:
+
+- **Flet edition (recommended, cross-platform, reliable for headless use)**: symlink the repo's launcher into PATH, e.g.
+  ```bash
+  ln -s /path/to/filecollector/filecollector ~/.local/bin/filecollector
+  ```
+- **GNOME edition (flatpak, Linux only)**: the command is `flatpak run com.github.samfic.filecollector`.
+  Note that under the flatpak sandbox, `--load`/`--save`/`--export` file I/O is unreliable, so the
+  **GNOME edition is only suitable as a GUI sync target** — when the GNOME GUI is running, MCP calls
+  are reflected live in the GUI; for pure MCP headless usage, use the Flet edition.
+
+Override the default command name via the `FILECOLLECTOR_CLI` environment variable, e.g.:
+
+```json
+{
+  "mcpServers": {
+    "filecollector": {
+      "command": "node",
+      "args": ["/absolute/path/to/filecollector-mcp-server/dist/index.js"],
+      "env": { "FILECOLLECTOR_CLI": "flatpak run com.github.samfic.filecollector" }
+    }
+  }
+}
 ```
 
 ## Configure in Cursor / Claude Desktop
@@ -82,8 +109,17 @@ npx tsc
 
 - State file path: `~/.config/filecollector/mcp_state.fcol`
 - Each tool call automatically `--load` to restore state → perform operation → `--save` to persist
+- All calls include `--no-ipc` so state is correctly persisted even in a headless environment with no GUI running
 - `fc_set_work_dir` calls `--clear` to clear old state and start a new session
 - Manually deleting the state file resets the session; the next call will automatically initialize
+
+### Seamless integration with the GUI
+
+If a FileCollector GUI is detected as running (IPC address file / socket reachable), after each
+operation the MCP server **additionally** forwards the operation to the GUI over IPC
+(`--work-dir` / `--select-file` / `--add-text` / `--clear`), so the GUI's orchestration list
+updates in real time. A sync failure does not affect the MCP server's own result. Only parameters
+that mutate the GUI's in-memory state are forwarded — never `--load` / `--save` / `--export` / `--no-ipc`.
 
 ## Project Structure
 
