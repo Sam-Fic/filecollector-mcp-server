@@ -45,11 +45,28 @@ function ipcSockPath(): string {
   return path.join(STATE_DIR, 'ipc.sock');
 }
 
-/** GUI 是否正在运行（有 IPC 地址文件或 unix socket 可见）。 */
+/** GUI 是否正在运行（真实连接探测，避免 stalefile 误判导致每次调用超时）。 */
 function isGuiRunning(): boolean {
+  let addr: string;
   try {
-    if (fs.existsSync(ipcAddrFile())) return true;
-    if (fs.existsSync(ipcSockPath())) return true;
+    addr = fs.readFileSync(ipcAddrFile(), 'utf-8').trim();
+  } catch {
+    return false;
+  }
+  const sep = addr.indexOf(':');
+  if (sep < 0) return false;
+  const mode = addr.slice(0, sep);
+  const value = addr.slice(sep + 1);
+  try {
+    if (mode === 'unix') {
+      const s = net.createConnection({ path: value });
+      s.destroy();
+      return true;
+    } else if (mode === 'tcp') {
+      const s = net.createConnection({ host: '127.0.0.1', port: parseInt(value, 10) });
+      s.destroy();
+      return true;
+    }
   } catch {
     return false;
   }

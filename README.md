@@ -1,4 +1,4 @@
-npx tsc# FileCollector MCP Server
+# FileCollector MCP Server
 
 [简体中文](README.md) | [English](README_en.md)
 
@@ -44,10 +44,37 @@ GNOME 桌面环境用户（美观的 UI 和更积极的维护）：
 # 安装依赖
 npm install
 
-# 构建（TypeScript -> JavaScript）
-npx tsc
+# 构建（TypeScript -> JavaScript）。环境有 bun 时用 `bun build`，否则用 tsc：
+npx tsc            # 或: bun build src/index.ts --outdir dist --target node
 
 # 产物位于 dist/index.js
+```
+
+## 前置：让 `filecollector` 命令可用
+
+MCP server 通过 `filecollector` 命令调用底层 CLI，需保证它在 `$PATH` 中：
+
+- **Flet 版（推荐，跨平台，headless 真可用）**：把仓库的启动脚本软链到 PATH，例如
+  ```bash
+  ln -s /path/to/filecollector/filecollector ~/.local/bin/filecollector
+  ```
+- **GNOME 版（flatpak，仅 Linux）**：命令名为 `flatpak run com.github.samfic.filecollector`。
+  注意 flatpak 沙箱下 `--load/--save/--export` 的文件读写不可靠，**GNOME 版仅适合作为
+  GUI 同步目标**——即 GNOME GUI 已运行时，MCP 调用会实时反映到 GUI；纯 MCP headless
+  场景请使用 Flet 版。
+
+可通过环境变量 `FILECOLLECTOR_CLI` 覆盖默认命令名，例如：
+
+```json
+{
+  "mcpServers": {
+    "filecollector": {
+      "command": "node",
+      "args": ["/absolute/path/to/filecollector-mcp-server/dist/index.js"],
+      "env": { "FILECOLLECTOR_CLI": "flatpak run com.github.samfic.filecollector" }
+    }
+  }
+}
 ```
 
 ## Configure in Cursor / Claude Desktop
@@ -82,8 +109,16 @@ npx tsc
 
 - 状态文件路径：`~/.config/filecollector/mcp_state.fcol`
 - 每个工具调用自动 `--load` 恢复状态 → 执行操作 → `--save` 持久化
+- 所有调用都带 `--no-ipc`，保证在无 GUI 的 headless 环境下状态正确落盘
 - `fc_set_work_dir` 会调用 `--clear` 清空旧状态，开启新会话
 - 手动删除状态文件可重置会话，下次调用将自动初始化
+
+### 与 GUI 的无缝衔接
+
+若检测到 FileCollector GUI 正在运行（IPC 地址文件/套接字可达），MCP 在每次操作后
+会**额外**通过 IPC 把操作实时转发给 GUI（`--work-dir` / `--select-file` / `--add-text`
+/ `--clear`），使 GUI 编排列表即时反映 MCP 的改动；同步失败不影响 MCP 自身返回结果。
+同步仅发送会修改 GUI 内存状态的参数，不含 `--load` / `--save` / `--export` / `--no-ipc`。
 
 ## Project Structure
 
